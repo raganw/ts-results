@@ -1,16 +1,16 @@
 module.exports = {
-    preset: 'ts-jest',
-    testEnvironment: 'node',
-    testRegex: '/test/.*.test.ts',
+    preset: "ts-jest",
+    testEnvironment: "node",
+    testRegex: "/test/.*.test.ts",
     globals: {
-        'ts-jest': {
-            tsconfig: 'test/tsconfig.json',
+        "ts-jest": {
+            tsconfig: "test/tsconfig.json",
         },
     },
-    collectCoverageFrom: ['src/**/*.ts'],
+    collectCoverageFrom: ["src/**/*.ts"],
     collectCoverage: true,
     coverageThreshold: {
-        './src/**/*.ts': {
+        "./src/**/*.ts": {
             branches: 100,
             functions: 100,
             lines: 100,

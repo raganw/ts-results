@@ -1,5 +1,5 @@
-import { toString } from './utils';
-import { Option, None, Some } from './option';
+import { toString } from "./utils";
+import { Option, None, Some } from "./option";
 
 /*
  * Missing Rust Result type methods:
@@ -15,7 +15,8 @@ import { Option, None, Some } from './option';
  * pub fn unwrap_err(self) -> E
  * pub fn unwrap_or_default(self) -> T
  */
-interface BaseResult<T, E> extends Iterable<T extends Iterable<infer U> ? U : never> {
+interface BaseResult<T, E>
+    extends Iterable<T extends Iterable<infer U> ? U : never> {
     /** `true` when the result is Ok */ readonly ok: boolean;
     /** `true` when the result is Err */ readonly err: boolean;
 
@@ -30,7 +31,7 @@ interface BaseResult<T, E> extends Iterable<T extends Iterable<infer U> ? U : ne
      * @param msg the message to throw if Ok value.
      */
     expectErr(msg: string): T;
-    
+
     /**
      * Returns the contained `Ok` value.
      * Because this function may throw, its use is generally discouraged.
@@ -118,12 +119,16 @@ export class ErrImpl<E> implements BaseResult<never, E> {
         this.err = true;
         this.val = val;
 
-        const stackLines = new Error().stack!.split('\n').slice(2);
-        if (stackLines && stackLines.length > 0 && stackLines[0].includes('ErrImpl')) {
+        const stackLines = new Error().stack!.split("\n").slice(2);
+        if (
+            stackLines &&
+            stackLines.length > 0 &&
+            stackLines[0].includes("ErrImpl")
+        ) {
             stackLines.shift();
         }
 
-        this._stack = stackLines.join('\n');
+        this._stack = stackLines.join("\n");
     }
 
     /**
@@ -139,15 +144,19 @@ export class ErrImpl<E> implements BaseResult<never, E> {
     }
 
     expect(msg: string): never {
-        throw new Error(`${msg} - Error: ${toString(this.val)}\n${this._stack}`);
+        throw new Error(
+            `${msg} - Error: ${toString(this.val)}\n${this._stack}`,
+        );
     }
 
     expectErr(_msg: string): E {
-        return this.val
+        return this.val;
     }
 
     unwrap(): never {
-        throw new Error(`Tried to unwrap Error: ${toString(this.val)}\n${this._stack}`);
+        throw new Error(
+            `Tried to unwrap Error: ${toString(this.val)}\n${this._stack}`,
+        );
     }
 
     map(_mapper: unknown): Err<E> {
@@ -281,14 +290,19 @@ export type Ok<T> = OkImpl<T>;
 
 export type Result<T, E> = Ok<T> | Err<E>;
 
-export type ResultOkType<T extends Result<any, any>> = T extends Ok<infer U> ? U : never;
+export type ResultOkType<T extends Result<any, any>> =
+    T extends Ok<infer U> ? U : never;
 export type ResultErrType<T> = T extends Err<infer U> ? U : never;
 
 export type ResultOkTypes<T extends Result<any, any>[]> = {
-    [key in keyof T]: T[key] extends Result<infer U, any> ? ResultOkType<T[key]> : never;
+    [key in keyof T]: T[key] extends Result<infer U, any>
+        ? ResultOkType<T[key]>
+        : never;
 };
 export type ResultErrTypes<T extends Result<any, any>[]> = {
-    [key in keyof T]: T[key] extends Result<infer U, any> ? ResultErrType<T[key]> : never;
+    [key in keyof T]: T[key] extends Result<infer U, any>
+        ? ResultErrType<T[key]>
+        : never;
 };
 
 export namespace Result {
@@ -349,7 +363,9 @@ export namespace Result {
      * Wrap an async operation that may throw an Error (`try-catch` style) into checked exception style
      * @param op The operation function
      */
-    export function wrapAsync<T, E = unknown>(op: () => Promise<T>): Promise<Result<T, E>> {
+    export function wrapAsync<T, E = unknown>(
+        op: () => Promise<T>,
+    ): Promise<Result<T, E>> {
         try {
             return op()
                 .then((val) => new Ok(val))
@@ -359,7 +375,9 @@ export namespace Result {
         }
     }
 
-    export function isResult<T = any, E = any>(val: unknown): val is Result<T, E> {
+    export function isResult<T = any, E = any>(
+        val: unknown,
+    ): val is Result<T, E> {
         return val instanceof Err || val instanceof Ok;
     }
 }

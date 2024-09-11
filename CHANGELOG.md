@@ -1,7 +1,8 @@
 # 3.3.0
+
 Big thank you to [@petehunt](https://github.com/petehunt) for all his work adding stack traces to `Err`.
 
--   Added a `stack` property to all `Err` objects.  Can be used to pull a stack trace
+-   Added a `stack` property to all `Err` objects. Can be used to pull a stack trace
 -   Added `toOption` and `toResult` methods for converting between `Option` and `Result` objects
 
 # v3.2.1
@@ -23,7 +24,7 @@ Big thank you to [@petehunt](https://github.com/petehunt) for all his work addin
     -   You should feel at home if you're used to working with Rust:
 
         ```typescript
-        import { Option, Some, None } from 'ts-results';
+        import { Option, Some, None } from "ts-results";
 
         const optionalNum: Option<number> = Some(3).map((num) => num * 2);
 

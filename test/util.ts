@@ -1,6 +1,6 @@
-import { IsExact, IsNever } from 'conditional-type-checks';
-import { Result } from '../src';
-import { Observable } from 'rxjs';
+import { IsExact, IsNever } from "conditional-type-checks";
+import { Result } from "../src";
+import { Observable } from "rxjs";
 
 export function expect_string<T>(x: T, y: IsExact<T, string>) {}
 
@@ -33,17 +33,21 @@ expect.extend({
             pass = false;
         }
 
-        const type = received.ok ? 'Ok' : 'Err';
-        const expectedType = received.ok ? 'Ok' : 'Err';
+        const type = received.ok ? "Ok" : "Err";
+        const expectedType = received.ok ? "Ok" : "Err";
         const val = JSON.stringify(received.val);
         const expectedVal = JSON.stringify(result.val);
 
         return {
-            message: () => `expected ${type}(${val}) ${pass ? '' : 'not '}to equal ${expectedType}(${expectedVal})`,
+            message: () =>
+                `expected ${type}(${val}) ${pass ? "" : "not "}to equal ${expectedType}(${expectedVal})`,
             pass,
         };
     },
-    toMatchObsResult(obs: Observable<Result<any, any>>, result: Result<any, any>) {
+    toMatchObsResult(
+        obs: Observable<Result<any, any>>,
+        result: Result<any, any>,
+    ) {
         let pass = true;
 
         let received: Result<any, any> | undefined;
@@ -59,13 +63,14 @@ expect.extend({
             pass = false;
         }
 
-        const type = received?.ok ? 'Ok' : 'Err';
-        const expectedType = received?.ok ? 'Ok' : 'Err';
+        const type = received?.ok ? "Ok" : "Err";
+        const expectedType = received?.ok ? "Ok" : "Err";
         const val = JSON.stringify(received?.val);
         const expectedVal = JSON.stringify(result.val);
 
         return {
-            message: () => `expected ${type}(${val}) ${pass ? '' : 'not '}to equal ${expectedType}(${expectedVal})`,
+            message: () =>
+                `expected ${type}(${val}) ${pass ? "" : "not "}to equal ${expectedType}(${expectedVal})`,
             pass,
         };
     },
@@ -82,7 +87,8 @@ expect.extend({
         }
 
         return {
-            message: () => `expected observable value: ${JSON.stringify(value)}\n\nFound: ${JSON.stringify(received)}`,
+            message: () =>
+                `expected observable value: ${JSON.stringify(value)}\n\nFound: ${JSON.stringify(received)}`,
             pass,
         };
     },

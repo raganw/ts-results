@@ -1,7 +1,8 @@
-import { toString } from './utils';
-import { Result, Ok, Err } from './result';
+import { toString } from "./utils";
+import { Result, Ok, Err } from "./result";
 
-interface BaseOption<T> extends Iterable<T extends Iterable<infer U> ? U : never> {
+interface BaseOption<T>
+    extends Iterable<T extends Iterable<infer U> ? U : never> {
     /** `true` when the Option is Some */ readonly some: boolean;
     /** `true` when the Option is None */ readonly none: boolean;
 
@@ -87,7 +88,7 @@ class NoneImpl implements BaseOption<never> {
     }
 
     toString(): string {
-        return 'None';
+        return "None";
     }
 }
 
@@ -179,10 +180,13 @@ export type Some<T> = SomeImpl<T>;
 
 export type Option<T> = Some<T> | None;
 
-export type OptionSomeType<T extends Option<any>> = T extends Some<infer U> ? U : never;
+export type OptionSomeType<T extends Option<any>> =
+    T extends Some<infer U> ? U : never;
 
 export type OptionSomeTypes<T extends Option<any>[]> = {
-    [key in keyof T]: T[key] extends Option<any> ? OptionSomeType<T[key]> : never;
+    [key in keyof T]: T[key] extends Option<any>
+        ? OptionSomeType<T[key]>
+        : never;
 };
 
 export namespace Option {
@@ -190,7 +194,9 @@ export namespace Option {
      * Parse a set of `Option`s, returning an array of all `Some` values.
      * Short circuits with the first `None` found, if any
      */
-    export function all<T extends Option<any>[]>(...options: T): Option<OptionSomeTypes<T>> {
+    export function all<T extends Option<any>[]>(
+        ...options: T
+    ): Option<OptionSomeTypes<T>> {
         const someOption = [];
         for (let option of options) {
             if (option.some) {
@@ -207,7 +213,9 @@ export namespace Option {
      * Parse a set of `Option`s, short-circuits when an input value is `Some`.
      * If no `Some` is found, returns `None`.
      */
-    export function any<T extends Option<any>[]>(...options: T): Option<OptionSomeTypes<T>[number]> {
+    export function any<T extends Option<any>[]>(
+        ...options: T
+    ): Option<OptionSomeTypes<T>[number]> {
         // short-circuits
         for (const option of options) {
             if (option.some) {

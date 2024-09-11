@@ -9,12 +9,12 @@ import {
     ResultOkType,
     ResultOkTypes,
     Some,
-} from '../src';
-import { eq } from './util';
+} from "../src";
+import { eq } from "./util";
 
-test('Err<E> | Ok<T> should be Result<T, E>', () => {
+test("Err<E> | Ok<T> should be Result<T, E>", () => {
     const r1 = Err(0);
-    const r2 = new Ok('');
+    const r2 = new Ok("");
     const r = Math.random() ? r1 : r2;
 
     expect(Result.isResult(r1)).toEqual(true);
@@ -23,7 +23,7 @@ test('Err<E> | Ok<T> should be Result<T, E>', () => {
     eq<typeof r, Result<string, number>>(true);
 });
 
-test('Type can be narrowed using ok & err', () => {
+test("Type can be narrowed using ok & err", () => {
     const r1 = Ok(0) as Result<number, string>;
     if (r1.ok) {
         eq<Ok<number>, typeof r1>(true);
@@ -38,27 +38,29 @@ test('Type can be narrowed using ok & err', () => {
     }
 });
 
-test('map', () => {
+test("map", () => {
     const r = new Err(0) as Result<string, number>;
     const r2 = r.map(Symbol);
     eq<typeof r2, Result<symbol, number>>(true);
 });
 
-test('andThen', () => {
-    const result = new Ok('Ok') as Result<string, boolean>;
-    const then = result.andThen(() => new Err('broke') as Result<boolean, string>);
-    expect(then).toMatchResult(new Err('broke'));
+test("andThen", () => {
+    const result = new Ok("Ok") as Result<string, boolean>;
+    const then = result.andThen(
+        () => new Err("broke") as Result<boolean, string>,
+    );
+    expect(then).toMatchResult(new Err("broke"));
     function takesResult(result: Result<boolean, string | boolean>): void {}
     takesResult(then);
 });
 
-test('mapErr', () => {
+test("mapErr", () => {
     const r = new Err(0) as Result<string, number>;
     const r2 = r.mapErr(Symbol);
     eq<typeof r2, Result<string, symbol>>(true);
 });
 
-test('Iterable', () => {
+test("Iterable", () => {
     const r1 = new Ok([true, false]) as Result<boolean[], number>;
     const r1Iter = r1[Symbol.iterator]();
     eq<Iterator<boolean>, typeof r1Iter>(true);
@@ -68,7 +70,7 @@ test('Iterable', () => {
     eq<Iterator<never>, typeof r2Iter>(true);
 });
 
-test('ResultOkType', () => {
+test("ResultOkType", () => {
     type a = ResultOkType<Ok<string>>;
     eq<string, a>(true);
     type b = ResultOkType<Err<string>>;
@@ -77,7 +79,7 @@ test('ResultOkType', () => {
     eq<string, c>(true);
 });
 
-test('ResultErrType', () => {
+test("ResultErrType", () => {
     type a = ResultErrType<Ok<string>>;
     eq<never, a>(true);
     type b = ResultErrType<Err<string>>;
@@ -86,19 +88,31 @@ test('ResultErrType', () => {
     eq<number, c>(true);
 });
 
-test('ResultOkTypes & ResultErrTypes', () => {
+test("ResultOkTypes & ResultErrTypes", () => {
     type a = ResultOkTypes<
-        [Ok<string>, Err<string>, Result<symbol, number>, Result<never, string>, Ok<32> | Err<boolean>]
+        [
+            Ok<string>,
+            Err<string>,
+            Result<symbol, number>,
+            Result<never, string>,
+            Ok<32> | Err<boolean>,
+        ]
     >;
     eq<[string, never, symbol, never, 32], a>(true);
 
     type b = ResultErrTypes<
-        [Ok<string>, Err<string>, Result<symbol, number>, Result<never, symbol>, Ok<boolean> | Err<32>]
+        [
+            Ok<string>,
+            Err<string>,
+            Result<symbol, number>,
+            Result<never, symbol>,
+            Ok<boolean> | Err<32>,
+        ]
     >;
     eq<[never, string, number, symbol, 32], b>(true);
 });
 
-test('Result.all', () => {
+test("Result.all", () => {
     const ok0 = Ok(3);
     const ok1 = new Ok(true);
     const ok2 = new Ok(8 as const) as Result<8, boolean>;
@@ -126,7 +140,7 @@ test('Result.all', () => {
     eq<typeof all5, Result<[number, boolean, 8, boolean], boolean | 9>>(true);
 });
 
-test('Result.any', () => {
+test("Result.any", () => {
     const ok0 = new Ok(3);
     const ok1 = new Ok(true);
     const ok2 = new Ok(8 as const) as Result<8, boolean>;
@@ -154,13 +168,13 @@ test('Result.any', () => {
     eq<typeof any5, Result<boolean | 8, [symbol, Error, 9, boolean]>>(true);
 });
 
-test('Result.wrap', () => {
+test("Result.wrap", () => {
     const a = Result.wrap(() => 1);
     expect(a).toMatchResult(Ok(1));
     eq<typeof a, Result<number, unknown>>(true);
 
     class CustomError {
-        readonly message = 'hi';
+        readonly message = "hi";
     }
     const err = new CustomError();
 
@@ -171,13 +185,13 @@ test('Result.wrap', () => {
     eq<typeof b, Result<number, CustomError>>(true);
 });
 
-test('Result.wrapAsync', async () => {
+test("Result.wrapAsync", async () => {
     const a = await Result.wrapAsync(async () => 1);
     expect(a).toMatchResult(Ok(1));
     eq<typeof a, Result<number, unknown>>(true);
 
     class CustomError {
-        readonly message = 'hi';
+        readonly message = "hi";
     }
     const err = new CustomError();
 
@@ -188,20 +202,20 @@ test('Result.wrapAsync', async () => {
     eq<typeof b, Result<number, CustomError>>(true);
 
     const c = await Result.wrapAsync<number, string>(() => {
-        throw 'thrown before promise';
+        throw "thrown before promise";
         return Promise.resolve(3);
     });
 
-    expect(c).toMatchResult(Err('thrown before promise'));
+    expect(c).toMatchResult(Err("thrown before promise"));
     eq<typeof c, Result<number, string>>(true);
 });
 
-test('safeUnwrap', () => {
+test("safeUnwrap", () => {
     const ok1 = new Ok(3).safeUnwrap();
     expect(ok1).toEqual(3);
     eq<typeof ok1, number>(true);
 
-    const err = new Err('hi');
+    const err = new Err("hi");
     const result = new Ok(1) as Result<number, string>;
 
     expect(() => {
@@ -222,12 +236,12 @@ test('safeUnwrap', () => {
     }
 });
 
-test('Issue #24', () => {
+test("Issue #24", () => {
     const getStatus = (payload: boolean): Result<boolean, Error> => {
         if (payload) {
             return Ok(payload);
         }
-        return Err(new Error('Payload is false'));
+        return Err(new Error("Payload is false"));
     };
 
     const processStatus = (): Result<boolean, Error> => {
@@ -237,11 +251,11 @@ test('Issue #24', () => {
     };
 });
 
-test('To option', () => {
-    const result = new Ok('hello') as Result<string, number>;
+test("To option", () => {
+    const result = new Ok("hello") as Result<string, number>;
     const option = result.toOption();
     eq<typeof option, Option<string>>(true);
-    expect(option).toEqual(Some('hello'));
+    expect(option).toEqual(Some("hello"));
 
     const result2: Result<string, number> = new Err(32);
     const option2 = result2.toOption();

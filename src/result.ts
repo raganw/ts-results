@@ -30,7 +30,7 @@ interface BaseResult<T, E>
      * Returns the contained `Ok` value, if does not exist.  Throws an error if it does.
      * @param msg the message to throw if Ok value.
      */
-    expectErr(msg: string): T;
+    expectErr(msg: string): E;
 
     /**
      * Returns the contained `Ok` value.

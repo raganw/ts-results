@@ -8,26 +8,32 @@
     "build:ts": "tsc -p tsconfig.json && tsc -p tsconfig.json -m esnext --outDir dist/esm/ -d false -declarationMap false",
     "build:copy": "copyfiles README.md LICENSE src/package.json dist --flat && copyfiles src/rxjs-operators/package.json dist --up 1",
     "clean": "rm -rf dist",
-    "test": "jest",
+    "test": "glob ./test/**/*.test.ts -c 'tsx --test'",
     "format": "prettier . --write",
     "type-check": "tsc --noEmit"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/vultix/ts-results.git"
+    "url": "https://github.com/raganw/ts-results.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@jest/expect": "^29.7.0",
     "@types/jest": "^26.0.22",
+    "@types/node": "^20.16.5",
     "conditional-type-checks": "^1.0.5",
     "copyfiles": "^2.4.1",
+    "glob": "^11.0.0",
     "jest": "^26.6.3",
     "prettier": "^3.3.3",
-    "rxjs": "^6.6.7",
     "ts-jest": "^26.5.4",
     "tslib": "^2.1.0",
+    "tsx": "^4.19.1",
     "typescript": "^5.6.2"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }
